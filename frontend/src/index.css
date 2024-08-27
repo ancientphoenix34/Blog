@@ -530,3 +530,106 @@ gap: 0.7rem;
     display: flex;
     gap: 1rem;
 }
+
+/* ---------------------------createpost----------------- */
+.ql-editor{
+overflow: scroll;
+background: var(--color-white);
+height: 10rem !important;
+}
+
+
+
+
+
+/* -----------------Media queries----------------- */
+@media screen and (max-width: 800px){
+    h1{
+        font-size: 1.5rem;
+    }
+    h2{
+        font-size: 1.3rem;
+    }
+    h3{
+        font-size: 1.2rem;
+    }
+    .container{
+        width: var(--container-width-md);
+    }
+    .nav_container{
+        position: absolute;
+    }
+    .nav_menu{
+        position: absolute;
+        top: 5rem;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+    }
+    .nav_menu li{
+        width: 100%;
+        box-shadow: -2rem 4rem rgba(0,0,0,0.26);
+        animation: dropDown 0.5s ease-in forwards;
+        opacity: 0;
+        transform: rotateX(90deg'angle');
+    }
+
+@keyframes dropDown {
+    to{
+        opacity: 1;
+        transform: rotateX(0);
+    }
+}
+
+    .nav_menu li a{
+        display: block;
+        background: var(--color-white);
+        padding: 0.85rem 2.5rem;
+    }
+    .nav_toggle_btn{
+        display: inline-block;
+        background: transparent;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .posts_container{
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .footer_categories{
+        flex-direction: column;
+    }
+
+    .post-detail{
+        width: 100%;
+        background: transparent;
+        padding: 0;
+    }
+
+    .form.profile_form{
+        margin-top: 2.5rem;
+        width: 100%;
+    }
+
+    .authors_container{
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .register,.login,.create-post{
+        width: 100%;
+    }
+
+    .dashboard_post{
+        flex-direction: column;
+    }
+
+    .dashboard_post-info{
+        gap: 1.5rem;
+    }
+    .dashboard_post-thumbnail{
+        width: 5rem;
+    }
+}
