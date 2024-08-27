@@ -24,7 +24,7 @@ const Login = () => {
           <p className="form_error-message">
             This is an error msg
           </p>
-          <input type="email" placeholder='E-mail' name='email' value={userData.email} onChange={changeInputHandler}/>
+          <input type="email" placeholder='E-mail' name='email' value={userData.email} onChange={changeInputHandler} autoFocus/>
           <input type="password" placeholder='Enter password' name='password' value={userData.password} onChange={changeInputHandler}/>
           <button type='submit' className='btn primary'>Login</button>
         </form>
