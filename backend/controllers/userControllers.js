@@ -78,7 +78,18 @@ return next(new HttpError("Something went wrong,please check your credentials", 
 
 // ----------user profile----------
 const getUser=async(req,res,next)=>{
-    res.json("user profile")
+try{
+const {id}=req.params;
+// exclude the password field from the returned user object
+const user=await User.findById(id).select("-password")
+if(!user){
+    return next(new HttpError("User not found",404))
+}
+res.status(200).json(user)
+}catch(error){
+    return next(new HttpError(error))
+
+}
 }
 
 // ----------change avatar---------
@@ -96,7 +107,13 @@ const editUser=async(req,res,next)=>{
 
 // ----------get authors--------
  const getAuthors=async(req,res,next)=>{
- res.json("get all authors")    
+    try{
+        const authors=await User.find().select('-password')
+        res.json(authors);
+    }
+    catch(error){
+        return next(new HttpError(error))
+    }
   }
 
 
