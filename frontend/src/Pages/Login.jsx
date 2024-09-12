@@ -27,12 +27,15 @@ e.preventDefault();
 setError("")
 try{
 const response=await axios.post(`${process.env.REACT_APP_BASE_URL}/users/login`,userData)
+const url=(`${process.env.REACT_APP_BASE_URL}/users/login`)
+console.log(url)
 const user=await response.data;
 setCurrentUser(user)
 navigate("/")
 }
 catch(err){
 setError(err.response.data.message)
+console.error("Error fetching post:", error);
 }
   }
   return (

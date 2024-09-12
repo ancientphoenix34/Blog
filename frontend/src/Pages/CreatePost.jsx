@@ -1,12 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState,useContext, useEffect } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { UserContext } from '../Context/UserContext'
+import { Navigate } from 'react-router-dom'
+
 
 const CreatePost = () => {
   const [title,setTitle]=useState('')
   const [category,setCategory]=useState('')
   const [description,setDescription]=useState('')
   const [thumbnail,setThumbnail]=useState('')
+
+
+  const {currentUser}=useContext(UserContext)
+//currentUser?.token: The optional chaining (?.) checks if currentUser is not null or undefined. If currentUser is a valid object, it accesses the token property.
+//If currentUser is null or undefined, the whole expression currentUser?.token will return undefined instead of throwing an error.
+  const token=currentUser?.token;
+
+  //redirect to loginpage if not logged in
+  useEffect(()=>{
+    if(!token){
+      Navigate('/login')
+    }
+  },[])
 
   const modules = {
     toolbar: [
