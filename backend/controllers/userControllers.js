@@ -70,6 +70,8 @@ if(!comparePass){
     return next(new HttpError("Invalid credentials",422))
 }
 
+console.log(req.body);
+
 const{_id:id,name}=user;
 const token=jwt.sign({id,name},process.env.JWT_SECRET,{expiresIn:"1d"})
 res.send({token,id,name})

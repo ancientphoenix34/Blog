@@ -11,7 +11,6 @@ const PostDetails = () => {
   const {id}=useParams()
   
   const[post,setPost]=useState(null)
-  const[creatorID,setCreatorID]=useState(null)
   const[error,setError]=useState(null)
   const[isLoading,setIsLoading]=useState(false)
 
@@ -29,7 +28,6 @@ setPost(response.data)
 // console.log("Post creator ID:", post.creator);
 // console.log("Current user ID:", currentUser?.id);
 // console.log("passing onto usestate",post)
-setCreatorID(response.data.creator)
       }
       catch(error){
 setError(error)
@@ -40,13 +38,13 @@ setError(error)
   },[id])
 
   // Log the post creator after post state has been updated
-  useEffect(() => {
-    if (post) {
-      console.log("after initializing:", post);
-      console.log("Post creator ID:", post.creator);
-      console.log("Current user ID:", currentUser?.id);
-    }
-  }, [post, currentUser]);
+  // useEffect(() => {
+  //   if (post) {
+  //     console.log("after initializing:", post);
+  //     console.log("Post creator ID:", post.creator);
+  //     console.log("Current user ID:", currentUser?.id);
+  //   }
+  // }, [post, currentUser]);
 
   if(isLoading){
     return <Loader/>
@@ -59,11 +57,11 @@ setError(error)
       {error && <p className='error'>{String(error)}</p>}
 {post && <div className="container post_detail_container">
   <div className="post-detail_header">
-    {/* <PostAuthor/> */}
+    <PostAuthor authorID={post.creator} createdAt={post.createdAt}/>
     {currentUser?.id==post?.creator &&
     <div className="post-detail_buttons">
-    <Link to={`/posts/werwer/edit`} className='btn btn-primary'>Edit</Link>
-<DeletePost/>
+    <Link to={`/posts/${post?._id}/edit`} className='btn btn-primary' style={{backgroundColor:"lightblue"}}>Edit</Link>
+<DeletePost postId={id}/>
   </div>
     }
     
@@ -72,8 +70,8 @@ setError(error)
   <div className="post-detail_thumbnail">
     <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${post.thumbnail}`} alt="" />
   </div>
-  <p>
-   {post.description}
+  <p dangerouslySetInnerHTML={{__html:post.description}}>
+   
   </p>
 </div>}
     </section>

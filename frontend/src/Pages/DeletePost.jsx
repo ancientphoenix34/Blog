@@ -19,7 +19,7 @@ const DeletePost = () => {
   return (
     <div>
       <Link className='btn sm danger'>Delete</Link>
-      <DeletePost/>
+      
     </div>
   )
 }
