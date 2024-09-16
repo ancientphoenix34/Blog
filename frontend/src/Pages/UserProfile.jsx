@@ -31,7 +31,7 @@ const UserProfile = () => {
    <section className='profile'>
 
     <div className="container profile_container">
-      <Link to={`/myposts/sdfsd`}>
+      <Link to={`/myposts/${currentUser.id}`}>
       My posts
       </Link>
       <div className="profile_details">

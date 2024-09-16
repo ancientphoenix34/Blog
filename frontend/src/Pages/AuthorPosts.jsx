@@ -26,7 +26,7 @@ console.log(err)
 setIsLoading(false);
 }
 fetchPosts();
-    },[])
+    },[id])
 
     if(isLoading){
       return <Loader/>
