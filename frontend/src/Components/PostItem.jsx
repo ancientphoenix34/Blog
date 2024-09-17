@@ -4,7 +4,7 @@ import PostAuthor from './PostAuthor'
 
 const PostItem = ({postID,thumbnail,title,description,authorID,category,createdAt}) => {
 
-  const shortDescription=description.length>145?description.substr(0,145)+'...':description;
+  const shortDescription=description.length>145?description.substr(0,120)+'...':description;
   const shortTitle=title.length>20?title.substr(0,20)+'...':title;
   return (
     <div>
