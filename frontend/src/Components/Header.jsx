@@ -1,6 +1,6 @@
 import React, { useState,useContext } from 'react'
 import { Link } from 'react-router-dom'
-import logo from '../Assets/Images/blog_6114045.png'
+import logo from '../Assets/Images/blogger.png'
 import { FaHamburger } from "react-icons/fa";
 import { AiOutlineCloseSquare } from "react-icons/ai";
 
