@@ -46,22 +46,26 @@ setAvatar(avatar)
     getUser();
   },[])
 
-  const changeAvatarHandler=async(e)=>{
-    setIsAvatarTouched(false);
+  const changeAvatarHandler=async()=>{
+    if (!(avatar instanceof File)) {
+      setError('Please select an image first')
+      return
+    }
+    setIsAvatarTouched(false)
     try{
-const postData=new FormData();
-postData.set('avatar',avatar)
-const response=await axios.post(`${process.env.REACT_APP_BASE_URL}/users/change-avatar`,postData,{
-  withCredentials:true,
-  headers:{
-    Authorization:`Bearer ${token}`
-  }
-})
-setAvatar(response?.data.avatar)
+      const postData=new FormData()
+      postData.set('avatar', avatar)
+      const response=await axios.post(`${process.env.REACT_APP_BASE_URL}/users/change-avatar`,postData,{
+        withCredentials:true,
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
+      setAvatar(response?.data.avatar)
+      setError('')
     }
     catch(error){
-      console.log(error);
-
+      setError(error.response?.data?.message || 'Failed to update avatar')
     }
   }
 
@@ -106,6 +110,7 @@ setAvatar(response?.data.avatar)
       My posts
       </Link>
       <div className="profile_details">
+        {error && <p className='error'>{error}</p>}
         <div className="avatar_wrapper">
           <div className="profile_avatar">
             <img src={avatar && typeof avatar === 'string' && avatar.startsWith('http') ? avatar : avatar ? `${process.env.REACT_APP_ASSETS_URL}/uploads/${avatar}` : Avatar} alt="" />
