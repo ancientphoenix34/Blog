@@ -54,7 +54,7 @@ const Header = () => {
           message="Are you sure you want to logout?"
           confirmLabel="Yes, Logout"
           isDanger={false}
-          onConfirm={() => { setCurrentUser(null); navigate('/login') }}
+          onConfirm={() => { setShowLogoutConfirm(false); setCurrentUser(null); navigate('/login') }}
           onCancel={() => setShowLogoutConfirm(false)}
         />
       )}
