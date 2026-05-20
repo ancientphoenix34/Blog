@@ -59,16 +59,26 @@ const CreatePost = () => {
     if (!excerpt) return setError('Write some content first to get AI suggestions.')
     setError('')
     setAiSuggestLoading(true)
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/ai/suggest`,
-        { excerpt },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      setAiSuggestion(response.data)
-      setShowSuggest(true)
-    } catch (err) {
-      setError('AI suggestion failed. Please try again.')
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/ai/suggest`,
+          { excerpt },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        setAiSuggestion(response.data)
+        setShowSuggest(true)
+        setAiSuggestLoading(false)
+        return
+      } catch (err) {
+        const status = err.response?.status
+        if (attempt < 2 && (status === 502 || status === 503)) {
+          await new Promise(res => setTimeout(res, 3000))
+        } else {
+          const msg = err.response?.data?.message
+          setError(msg || 'AI suggestion failed. Please try again.')
+        }
+      }
     }
     setAiSuggestLoading(false)
   }
@@ -78,16 +88,26 @@ const CreatePost = () => {
     if (!excerpt) return setError('Write some content first to analyse tone.')
     setError('')
     setToneLoading(true)
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/ai/analyze-tone`,
-        { excerpt },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      setToneResult(response.data)
-      setShowTone(true)
-    } catch (err) {
-      setError('Tone analysis failed. Please try again.')
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/ai/analyze-tone`,
+          { excerpt },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        setToneResult(response.data)
+        setShowTone(true)
+        setToneLoading(false)
+        return
+      } catch (err) {
+        const status = err.response?.status
+        if (attempt < 2 && (status === 502 || status === 503)) {
+          await new Promise(res => setTimeout(res, 3000))
+        } else {
+          const msg = err.response?.data?.message
+          setError(msg || 'Tone analysis failed. Please try again.')
+        }
+      }
     }
     setToneLoading(false)
   }
