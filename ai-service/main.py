@@ -3,7 +3,7 @@ import logging
 import traceback
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -36,6 +36,11 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 async def global_exception_handler(request: Request, exc: Exception):
     traceback.print_exc()
     return JSONResponse(status_code=500, content={"detail": f"Internal server error: {exc}"})
+
+
+@app.get("/", response_class=PlainTextResponse)
+async def health():
+    return "ok"
 
 
 app.include_router(ai_router)

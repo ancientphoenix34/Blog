@@ -23,7 +23,8 @@ async def suggest(body: ExcerptInput):
         result = await suggest_title_and_category(body.excerpt)
         return result
     except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        status = 503 if "529" in str(e) or "overloaded" in str(e).lower() else 500
+        raise HTTPException(status_code=status, detail=str(e))
     except Exception as e:
         print(f"[route /suggest] unhandled: {type(e).__name__}: {e}", flush=True)
         raise HTTPException(status_code=500, detail="Unexpected error in suggest endpoint")
@@ -53,7 +54,8 @@ async def tone(body: ExcerptInput):
         result = await analyze_tone(body.excerpt)
         return result
     except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        status = 503 if "529" in str(e) or "overloaded" in str(e).lower() else 500
+        raise HTTPException(status_code=status, detail=str(e))
     except Exception as e:
         print(f"[route /analyze-tone] unhandled: {type(e).__name__}: {e}", flush=True)
         raise HTTPException(status_code=500, detail="Unexpected error in analyze-tone endpoint")
