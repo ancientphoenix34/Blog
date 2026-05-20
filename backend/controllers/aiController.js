@@ -3,6 +3,12 @@ const HttpError = require('../models/errorModel');
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
 
+const forwardAiError = async (response, next) => {
+  const body = await response.json().catch(() => ({}));
+  const message = body.detail || 'AI service error';
+  return next(new HttpError(message, response.status));
+};
+
 const suggestTitleAndCategory = async (req, res, next) => {
   const { excerpt } = req.body;
   if (!excerpt) return next(new HttpError('Excerpt is required', 422));
@@ -12,7 +18,7 @@ const suggestTitleAndCategory = async (req, res, next) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ excerpt }),
     });
-    if (!response.ok) return next(new HttpError('AI service error', 502));
+    if (!response.ok) return forwardAiError(response, next);
     const data = await response.json();
     res.status(200).json(data);
   } catch (err) {
@@ -58,7 +64,7 @@ const analyzeTone = async (req, res, next) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ excerpt }),
     });
-    if (!response.ok) return next(new HttpError('AI service error', 502));
+    if (!response.ok) return forwardAiError(response, next);
     const data = await response.json();
     res.status(200).json(data);
   } catch (err) {
