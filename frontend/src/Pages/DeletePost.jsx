@@ -1,53 +1,59 @@
-import React, { useContext,useEffect,useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../Context/UserContext';
-import { Link, useNavigate,useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '../Components/Loader';
-const DeletePost = ({postId:id}) => {
+import ConfirmationBox from '../Components/ConfirmationBox';
 
-  const {currentUser}=useContext(UserContext)
-//currentUser?.token: The optional chaining (?.) checks if currentUser is not null or undefined. If currentUser is a valid object, it accesses the token property.
-//If currentUser is null or undefined, the whole expression currentUser?.token will return undefined instead of throwing an error.
-  const token=currentUser?.token;
-const navigate=useNavigate();
-const location=useLocation();
-const [isLoading,setIsLoading]=useState(false);
-  //redirect to login page if not logged in
-  useEffect(()=>{
-    if(!token){
+const DeletePost = ({ postId: id }) => {
+  const { currentUser } = useContext(UserContext)
+  const token = currentUser?.token;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    if (!token) {
       navigate('/login')
     }
-  },[])
+  }, [])
 
-
-  const removePost=async()=>{
+  const removePost = async () => {
+    setShowConfirm(false);
     setIsLoading(true);
-    try{
-const response=await axios.delete(`${process.env.REACT_APP_BASE_URL}/posts/${id}`,{withCredentials:true,headers:{Authorization:`Bearer ${token}`}});
-if(response && response.status === 200){
-  if(location.pathname== `/myposts/${currentUser.id}`){
-    navigate(0)
-} else{
-  navigate('/')
-}   
-}
-setIsLoading(false);
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/posts/${id}`, { withCredentials: true, headers: { Authorization: `Bearer ${token}` } });
+      if (response && response.status === 200) {
+        if (location.pathname == `/myposts/${currentUser.id}`) {
+          navigate(0)
+        } else {
+          navigate('/')
+        }
+      }
+      setIsLoading(false);
     }
-    catch(err){
+    catch (err) {
       console.log(err);
-      
     }
   }
 
-
-  if(isLoading){
-    return <Loader/>
+  if (isLoading) {
+    return <Loader />
   }
 
   return (
     <div>
-      <Link className='btn sm danger' onClick={()=>removePost(id)}>Delete</Link>
-      
+      <Link className='btn sm danger' onClick={() => setShowConfirm(true)}>Delete</Link>
+      {showConfirm && (
+        <ConfirmationBox
+          message="Are you sure you want to delete this post?"
+          confirmLabel="Yes, Delete"
+          isDanger={true}
+          onConfirm={removePost}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
     </div>
   )
 }

@@ -58,7 +58,7 @@ if(isLoading){
       </div>
       <div className="dashboard_post-actions">
         <Link to={`/posts/${post._id}`} className='btn sm'>View</Link>
-        <Link to={`/posts/${post._id}/edit`} className='btn primary'>Edit</Link>
+        <Link to={`/posts/${post._id}/edit`} className='btn sm primary'>Edit</Link>
         <DeletePost postId={post._id}/>
       </div>
       </article>

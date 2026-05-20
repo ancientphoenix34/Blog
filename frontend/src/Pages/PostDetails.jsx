@@ -94,7 +94,7 @@ const PostDetails = () => {
           <PostAuthor authorID={post.creator} createdAt={post.createdAt} />
           {currentUser?.id == post?.creator &&
             <div className="post-detail_buttons">
-              <Link to={`/posts/${post?._id}/edit`} className='btn btn-primary' style={{ backgroundColor: "lightblue" }}>Edit</Link>
+              <Link to={`/posts/${post?._id}/edit`} className='btn sm'>Edit</Link>
               <DeletePost postId={id} />
             </div>
           }
