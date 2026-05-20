@@ -21,7 +21,7 @@ if not _api_key:
 client = AsyncAnthropic(api_key=_api_key)
 
 CATEGORIES = ["Agriculture", "Business", "Education", "Entertainment", "Art", "Investment", "Uncategorized", "Weather"]
-_MODEL = "claude-opus-4-5"
+_MODEL = "claude-haiku-4-5-20251001"
 
 
 def _get_text(response) -> str:
