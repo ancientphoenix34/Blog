@@ -113,7 +113,7 @@ setAvatar(avatar)
         {error && <p className='error'>{error}</p>}
         <div className="avatar_wrapper">
           <div className="profile_avatar">
-            <img src={avatar && typeof avatar === 'string' && avatar.startsWith('http') ? avatar : avatar ? `${process.env.REACT_APP_ASSETS_URL}/uploads/${avatar}` : Avatar} alt="" />
+            <img src={avatar instanceof File ? URL.createObjectURL(avatar) : avatar?.startsWith('http') ? avatar : Avatar} alt="" />
           </div>
           {/* Form to update avatar */}
           <form className='avatar_form'>

@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Loader from '../Components/Loader';
+import Avatar from '../Assets/Images/Avatar.jpg'
 
 
 
@@ -38,7 +39,7 @@ getAuthors();
             authors.map(({_id:id,avatar,name,posts})=>{
               return <Link key={id} to={`/posts/users/${id}`} className='author'>
                 <div className="author_avatar">
-                  <img src={avatar?.startsWith('http') ? avatar : `${process.env.REACT_APP_ASSETS_URL}/uploads/${avatar}`} alt={`Image of ${name}`} />
+                  <img src={avatar?.startsWith('http') ? avatar : Avatar} alt={`Image of ${name}`} />
                 </div>
                 <div className="author_info">
                   <h4>{name}</h4>
