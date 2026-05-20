@@ -2,9 +2,7 @@ const User = require("../models/userModel")
 const HttpError = require("../models/errorModel")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const fs=require('fs')
-const path=require('path')
-const {v4:uuid}=require('uuid')
+const { uploadImage, deleteImage } = require('../utils/cloudinary')
 
 
 
@@ -99,45 +97,29 @@ res.status(200).json(user)
 }
 
 // ----------change avatar---------
-const changeAvatar=async(req,res,next)=>{
-    try{
-       if(!req.files.avatar){
-           return next(new HttpError("Please upload an image",422))
-       }
-
-       const user=User.findById(req.user.id)
-    //    delete old avatar if exist
-       if(user.avatar){
-         fs.unlink(path.join(__dirname,'..',user.avatar),(err)=>{
-            if(err){
-                return next(new HttpError(err))
-            }
-         })
-       }
-       const {avatar}=req.files
-       if(avatar.size>5000000){
-        return next(new HttpError("Please upload an image less than 5MB",422))
-       }
-
-       let fileName;
-       fileName=avatar.name;
-       let splittedFileName=fileName.split(".")
-       let newFilename=splittedFileName[0]+uuid()+'.'+splittedFileName[splittedFileName.length-1]
-       avatar.mv(path.join(__dirname,'..','uploads',newFilename),async(err)=>{
-        if(err){
-            return next(new HttpError(err))
-        }
-        const updatedAvatar= await User.findByIdAndUpdate(req.user.id,{avatar:newFilename},{new:true})
-        if(!updatedAvatar){
-            return next(new HttpError("Something went wrong",422))
+const changeAvatar = async (req, res, next) => {
+  try {
+    if (!req.files?.avatar) {
+      return next(new HttpError('Please upload an image', 422))
     }
-res.status(200).json(updatedAvatar)
-})
+    const { avatar } = req.files
+    if (avatar.size > 5000000) {
+      return next(new HttpError('Please upload an image less than 5MB', 422))
+    }
+    const currentUser = await User.findById(req.user.id)
+    if (currentUser.avatar) {
+      await deleteImage(currentUser.avatar)
+    }
+    const avatarUrl = await uploadImage(avatar.data, 'blog/avatars')
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, { avatar: avatarUrl }, { new: true })
+    if (!updatedUser) {
+      return next(new HttpError('Something went wrong', 422))
+    }
+    res.status(200).json(updatedUser)
+  } catch (error) {
+    return next(new HttpError(error))
+  }
 }
-catch(error){
-        return next(new HttpError(error))
-    }
-    }
 
 
 

@@ -35,7 +35,7 @@ getAuthor();
   return (
     <Link to={`/posts/users/${authorID}`} className='post_author'>
       <div className="post_author-avatar">
-        <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${author?.avatar}`} alt="" />
+        <img src={author?.avatar ? (author.avatar.startsWith('http') ? author.avatar : `${process.env.REACT_APP_ASSETS_URL}/uploads/${author.avatar}`) : Avatar} alt="" />
       </div>
       <div className="post_author-details">
         <h5>{author?.name}</h5>

@@ -52,7 +52,7 @@ if(isLoading){
     return <article key={post.id} className='dashboard_post'>
       <div className="dashboard_post-info">
         <div className="dashboard_post_thumbnail">
-          <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${post.thumbnail}`} className="dashboard_post-thumbnail"alt="" />
+          <img src={post.thumbnail?.startsWith('http') ? post.thumbnail : `${process.env.REACT_APP_ASSETS_URL}/uploads/${post.thumbnail}`} className="dashboard_post-thumbnail" alt="" />
         </div>
         <h5>{post.title}</h5>
       </div>

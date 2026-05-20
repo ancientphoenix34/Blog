@@ -124,7 +124,7 @@ const PostDetails = () => {
         )}
 
         <div className="post-detail_thumbnail">
-          <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${post.thumbnail}`} alt="" />
+          <img src={post.thumbnail?.startsWith('http') ? post.thumbnail : `${process.env.REACT_APP_ASSETS_URL}/uploads/${post.thumbnail}`} alt="" />
         </div>
         <p dangerouslySetInnerHTML={{ __html: post.description }}>
         </p>

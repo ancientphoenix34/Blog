@@ -108,7 +108,7 @@ setAvatar(response?.data.avatar)
       <div className="profile_details">
         <div className="avatar_wrapper">
           <div className="profile_avatar">
-            <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${avatar}`} alt="" />
+            <img src={avatar && typeof avatar === 'string' && avatar.startsWith('http') ? avatar : avatar ? `${process.env.REACT_APP_ASSETS_URL}/uploads/${avatar}` : Avatar} alt="" />
           </div>
           {/* Form to update avatar */}
           <form className='avatar_form'>

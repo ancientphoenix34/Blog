@@ -10,7 +10,7 @@ const PostItem = ({postID,thumbnail,title,description,authorID,category,createdA
     <div>
       <article className="post">
         <div className="post_thumbnail">
-            <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${thumbnail}`} alt={title} />
+            <img src={thumbnail?.startsWith('http') ? thumbnail : `${process.env.REACT_APP_ASSETS_URL}/uploads/${thumbnail}`} alt={title} />
             {/* {console.log(`${process.env.REACT_APP_ASSETS_URL}/uploads/${thumbnail}`)}
             {console.log(typeof(thumbnail))} */}
             

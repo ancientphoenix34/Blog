@@ -2,7 +2,7 @@ const express =require('express');
 const cors=require('cors');
 const {connect} = require('mongoose');
 require('dotenv').config();
-const PORT=5000;
+const PORT = process.env.PORT || 5000;
 const upload=require('express-fileupload')
 
 
@@ -19,7 +19,6 @@ app.use(express.urlencoded({extended:true}));
 app.use(cors({ credentials: true, origin: process.env.CLIENT_ORIGIN }));
 // file upload
 app.use(upload());
-app.use('/uploads',express.static(__dirname+'/uploads'))
 
 
 
