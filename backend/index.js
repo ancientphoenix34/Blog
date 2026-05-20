@@ -8,6 +8,7 @@ const upload=require('express-fileupload')
 
 const userRoutes=require('./routes/userRoutes')
 const postRoutes=require('./routes/postRoutes');
+const aiRoutes=require('./routes/aiRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 
@@ -15,7 +16,7 @@ const app=express();
 
 app.use(express.json({extended:true}));
 app.use(express.urlencoded({extended:true}));
-app.use(cors({ credentials: true,  origin: 'https://blog-frontend-u5q6.onrender.com' }));
+app.use(cors({ credentials: true,  origin: 'http://localhost:3000' }));
 // file upload
 app.use(upload());
 app.use('/uploads',express.static(__dirname+'/uploads'))
@@ -25,6 +26,7 @@ app.use('/uploads',express.static(__dirname+'/uploads'))
 // This mounts all routes defined in userRoutes and postRoutes at the /api/users base path.
 app.use('/api/users',userRoutes)
 app.use('/api/posts',postRoutes)
+app.use('/api/ai',aiRoutes)
 
 app.use(notFound);
 app.use(errorHandler)

@@ -1,79 +1,134 @@
-import React,{useContext,useEffect,useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PostAuthor from '../Components/PostAuthor'
 import { Link, useParams } from 'react-router-dom'
-import Thumbnail from '../Assets/Images/Science.jpg'
 import { UserContext } from '../Context/UserContext'
 import DeletePost from './DeletePost'
 import Loader from '../Components/Loader'
 import axios from 'axios'
+import { extractExcerpt, countWords } from '../utils/extractExcerpt'
+import SummaryCard from '../Components/SummaryCard'
+
 
 const PostDetails = () => {
-  const {id}=useParams()
-  
-  const[post,setPost]=useState(null)
-  const[error,setError]=useState(null)
-  const[isLoading,setIsLoading]=useState(false)
+  const { id } = useParams()
 
+  const [post, setPost] = useState(null)
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const {currentUser}=useContext(UserContext)
+  const [summary, setSummary] = useState('')
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [showSummary, setShowSummary] = useState(false)
+  const [summaryLoaded, setSummaryLoaded] = useState(false)
 
+  const { currentUser } = useContext(UserContext)
 
-  useEffect(()=>{
-    const getPost=async()=>{
+  useEffect(() => {
+    const getPost = async () => {
       setIsLoading(true)
-      try{
-const response=await axios.get(`${process.env.REACT_APP_BASE_URL}/posts/${id}`)
-console.log("first :",response.data)
-setPost(response.data)
-// console.log("Post creator ID:", post.creator);
-// console.log("Current user ID:", currentUser?.id);
-// console.log("passing onto usestate",post)
-      }
-      catch(error){
-setError(error)
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/posts/${id}`)
+        setPost(response.data)
+      } catch (error) {
+        setError(error)
       }
       setIsLoading(false)
     }
-    getPost();
-  },[id])
+    getPost()
+  }, [id])
 
-  // Log the post creator after post state has been updated
-  // useEffect(() => {
-  //   if (post) {
-  //     console.log("after initializing:", post);
-  //     console.log("Post creator ID:", post.creator);
-  //     console.log("Current user ID:", currentUser?.id);
-  //   }
-  // }, [post, currentUser]);
+  const handleSummarize = async () => {
+    if (summaryLoaded) {
+      setShowSummary(v => !v)
+      return
+    }
 
-  if(isLoading){
-    return <Loader/>
+    const excerpt = extractExcerpt(post.description)
+    setIsStreaming(true)
+    setShowSummary(true)
+    setSummary('')
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/ai/summarize`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ excerpt }),
+        }
+      )
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value, { stream: true })
+        const lines = chunk.split('\n')
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const text = line.slice(6)
+            if (text === '[DONE]' || text === '[ERROR]') break
+            setSummary(prev => prev + text)
+          }
+        }
+      }
+      setSummaryLoaded(true)
+    } catch (err) {
+      setSummary('Could not load summary. Please try again.')
+    }
+    setIsStreaming(false)
   }
 
-
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <section className='post-detail'>
       {error && <p className='error'>{String(error)}</p>}
-{post && <div className="container post_detail_container">
-  <div className="post-detail_header">
-    <PostAuthor authorID={post.creator} createdAt={post.createdAt}/>
-    {currentUser?.id==post?.creator &&
-    <div className="post-detail_buttons">
-    <Link to={`/posts/${post?._id}/edit`} className='btn btn-primary' style={{backgroundColor:"lightblue"}}>Edit</Link>
-<DeletePost postId={id}/>
-  </div>
-    }
-    
-  </div>
-  <h1>{post.title}</h1>
-  <div className="post-detail_thumbnail">
-    <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${post.thumbnail}`} alt="" />
-  </div>
-  <p dangerouslySetInnerHTML={{__html:post.description}}>
-   
-  </p>
-</div>}
+      {post && <div className="container post_detail_container">
+        <div className="post-detail_header">
+          <PostAuthor authorID={post.creator} createdAt={post.createdAt} />
+          {currentUser?.id == post?.creator &&
+            <div className="post-detail_buttons">
+              <Link to={`/posts/${post?._id}/edit`} className='btn btn-primary' style={{ backgroundColor: "lightblue" }}>Edit</Link>
+              <DeletePost postId={id} />
+            </div>
+          }
+        </div>
+
+        <h1>{post.title}</h1>
+
+        {countWords(post.description) > 300 && (
+          <button
+            type="button"
+            className="btn sm ai-btn"
+            onClick={handleSummarize}
+            disabled={isStreaming}
+          >
+            {summaryLoaded
+              ? (showSummary ? '▲ Hide Summary' : '📄 Show Summary')
+              : '📄 Summarize this post'}
+          </button>
+        )}
+
+        {showSummary && (
+          <SummaryCard
+            summary={summary}
+            isStreaming={isStreaming}
+            onClose={() => setShowSummary(false)}
+          />
+        )}
+
+        <div className="post-detail_thumbnail">
+          <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${post.thumbnail}`} alt="" />
+        </div>
+        <p dangerouslySetInnerHTML={{ __html: post.description }}>
+        </p>
+      </div>}
     </section>
   )
 }
