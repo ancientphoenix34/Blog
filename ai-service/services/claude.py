@@ -18,7 +18,7 @@ _api_key = os.getenv("ANTHROPIC_API_KEY")
 if not _api_key:
     raise RuntimeError("ANTHROPIC_API_KEY is not set. Add it to ai-service/.env")
 
-client = AsyncAnthropic(api_key=_api_key, max_retries=5)
+client = AsyncAnthropic(api_key=_api_key, max_retries=2, timeout=20.0)
 
 CATEGORIES = ["Agriculture", "Business", "Education", "Entertainment", "Art", "Investment", "Uncategorized", "Weather"]
 _MODEL = "claude-haiku-4-5-20251001"
