@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '../Assets/Images/blogger.png'
 import { FaHamburger } from "react-icons/fa";
-import { AiOutlineCloseSquare } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 import { UserContext } from '../Context/UserContext';
 import ConfirmationBox from './ConfirmationBox';
 
@@ -44,7 +44,7 @@ const Header = () => {
             </ul>}
           <button className="nav_toggle_btn" onClick={() => setIsNavOpen(!isNavOpen)}>
             {
-              isNavOpen ? <AiOutlineCloseSquare /> : <FaHamburger />
+              isNavOpen ? <AiOutlineClose /> : <FaHamburger />
             }
           </button>
         </div>

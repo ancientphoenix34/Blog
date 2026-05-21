@@ -53,6 +53,16 @@ body{
     color: var(--color-gray-700);
 }
 
+.layout{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content{
+    flex: 1;
+}
+
 a{
     color: var(--color-gray-700);
     text-decoration: none;
@@ -187,8 +197,8 @@ backdrop-filter: blur(20px);
 
 footer{
     background: var(--color-gray-800);
-    margin-top: 6rem;
-    padding-top: 6rem;
+    margin-top: 2rem;
+    padding: 3rem 0 2rem;
 }
 
 .footer_categories{
@@ -256,7 +266,7 @@ footer{
     cursor: default;
 }
 
-.posts:hover{
+.post:hover{
     box-shadow: 0 1.5rem 2rem rgba(0,0,0,0.1);
 }
 
@@ -569,10 +579,9 @@ height: 10rem !important;
     }
     .nav_menu li{
         width: 100%;
-        box-shadow: -2rem 4rem rgba(0,0,0,0.26);
         animation: dropDown 0.5s ease-in forwards;
         opacity: 0;
-        transform: rotateX(90deg'angle');
+        transform: rotateX(90deg);
     }
 
 @keyframes dropDown {
