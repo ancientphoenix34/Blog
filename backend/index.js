@@ -1,41 +1,47 @@
-const express =require('express');
-const cors=require('cors');
-const {connect} = require('mongoose');
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const { connect } = mongoose;
 require('dotenv').config();
 const PORT = process.env.PORT || 5000;
-const upload=require('express-fileupload')
+const upload = require('express-fileupload');
 
-
-const userRoutes=require('./routes/userRoutes')
-const postRoutes=require('./routes/postRoutes');
-const aiRoutes=require('./routes/aiRoutes');
+const userRoutes = require('./routes/userRoutes');
+const postRoutes = require('./routes/postRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
+const app = express();
 
-const app=express();
-
-app.use(express.json({extended:true}));
-app.use(express.urlencoded({extended:true}));
+app.use(express.json({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: process.env.CLIENT_ORIGIN }));
-// file upload
 app.use(upload());
 
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 0) {
+    await connect(process.env.MONGO_URI);
+  }
+};
 
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
-// This mounts all routes defined in userRoutes and postRoutes at the /api/users base path.
-app.use('/api/users',userRoutes)
-app.use('/api/posts',postRoutes)
-app.use('/api/ai',aiRoutes)
+app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.use(notFound);
-app.use(errorHandler)
+app.use(errorHandler);
 
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+}
 
-connect(process.env.MONGO_URI).then(
-    app.listen(PORT,()=>{
-    console.log(`listening on port ${process.env.PORT}`);
-}))
-.catch(error=>console.log(error));
-
-
-
+module.exports = app;
