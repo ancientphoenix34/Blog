@@ -61,6 +61,7 @@ const PostDetails = () => {
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
 
+      let streamError = false
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
@@ -70,12 +71,18 @@ const PostDetails = () => {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const text = line.slice(6)
-            if (text === '[DONE]' || text === '[ERROR]') break
+            if (text === '[DONE]') break
+            if (text === '[ERROR]') { streamError = true; break }
             setSummary(prev => prev + text)
           }
         }
+        if (streamError) break
       }
-      setSummaryLoaded(true)
+      if (streamError) {
+        setSummary('Could not load summary. Please try again.')
+      } else {
+        setSummaryLoaded(true)
+      }
     } catch (err) {
       setSummary('Could not load summary. Please try again.')
     }
